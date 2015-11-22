@@ -1,0 +1,50 @@
+{% extends "arduinoControl/base.html" %}
+
+{% block content %}
+<ul>
+{% for temp in templist %}
+	<li style="color:{% cycle 'blue' 'green' %}">{{ temp }}</li>
+{% endfor %}
+</ul>
+
+<div id = "temp_chart"></div>
+
+<script>
+	google.load('visualization', '1.0', {'packages':['corechart']});
+	google.setOnLoadCallback(drawChart);
+	
+	function drawChart() {
+		var data = new google.visualization.DataTable();
+		
+		data.addColumn("date", "Date");
+		data.addColumn("number", "Temperature");
+		data.addColumn("number", "Thermostat");
+
+		var outer_list ={{ chart_temps|safe }};
+		var inner_list = [];
+		var datum;
+		var regel = [];
+		for (x in outer_list) {
+			inner_list = outer_list[x];
+			datum_str = inner_list[0];	
+			datum = new Date(datum_str.substring(0, 4), parseInt(datum_str.substring(4, 6)-1), datum_str.substring(6, 8), datum_str.substring(8, 10), datum_str.substring(10, 12));
+			regel.push([datum, inner_list[1], inner_list[2]]);
+			data.addRows(regel);
+		};
+	
+		 var options = {
+			'width':1024,
+			'height':600,
+			title : 'Temperature of last day',
+			vAxis: {title: 'Celsius'},
+			hAxis: {format:'y M d, hh:mm'},
+			//hAxis: {title: 'Time'},
+			seriesType: 'bars',
+			series: {1: {type: 'bars'}}
+		};
+		var chart = new google.visualization.ComboChart(document.getElementById('temp_chart'));
+		chart.draw(data, options);
+	};
+</script>
+
+{% endblock %}

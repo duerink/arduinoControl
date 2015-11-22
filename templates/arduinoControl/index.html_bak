@@ -1,0 +1,33 @@
+{% extends "arduinoControl/base.html" %}
+
+{% block content %}
+<ul>
+{% for temp in templist %}
+	<li style="color:{% cycle 'blue' 'green' %}">{{ temp }}</li>
+{% endfor %}
+</ul>
+
+<div id = "temp_chart"></div>
+
+<script>
+	google.load('visualization', '1.0', {'packages':['corechart']});
+	google.setOnLoadCallback(drawChart);
+	
+	function drawChart() {
+		var data = new google.visualization.DataTable();
+		
+		data.addColumn("string", "Datum");
+		data.addColumn("number", "Temperatuur");
+
+		data.addRows( {{ chart_temps|safe }} );
+		var options = {
+			'width': 800,
+			'height': 600,
+		};
+
+		var chart = new google.visualization.ColumnChart(document.getElementById('temp_chart'));
+		chart.draw(data, options);
+	}
+</script>
+
+{% endblock %}
