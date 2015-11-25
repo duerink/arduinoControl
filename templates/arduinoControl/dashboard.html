@@ -1,15 +1,33 @@
 {% extends "arduinoControl/base.html" %}
 
 {% block content %}
-<br>
-<center>
-<!--Div that will hold the dashboard-->
-<div id="dashboard_div">
-	<!--Divs that will hold each control and chart-->
-	<div id="filter_div"></div>
-	<div id="chart_div"></div>
+
+<div class="container">
+	<h2>Arduino Control</h2>
+	<p>Under construction</p>
+	<ul class="nav nav-tabs" role="tablist">
+		<li><a href=".">Home</a></li>
+		<li><a href="graphs">Graphs</a></li>
+		<li class="active"><a href="dashboard">Dashboard</a></li>
+		<li><a href="alarmon">Alarm On!</a></li>
+		<li><a href="alarmoff">Alarm Off!</a></li>
+	</ul>
 </div>
-</center>
+
+<div class="info">
+	<div class = "container-fluid">
+		<div class = "row">
+			<div class = "col-md-8 col-md-offset-2">			
+				<br>
+				<div id="dashboard_div">
+				<!--Divs that will hold each control and chart-->
+					<div id="filter_div"></div>
+					<div id="chart_div"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <!--Load the AJAX API-->
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -78,8 +96,5 @@
 		dashboard.draw(data);
 	}
 </script>
-
-
-
 
 {% endblock %}

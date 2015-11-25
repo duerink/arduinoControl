@@ -1,8 +1,9 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<title>Arduino Control</title>
+		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
@@ -14,30 +15,24 @@
 	</head>
 
 	<body>
-		<div class="container">
-			<h2>Arduino Control</h2>
-			<p>Under construction</p>
-			<ul class="nav nav-tabs" role="tablist">
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="temperature">Temperature</a></li>
-				<li><a href="dashboard">Dashboard</a></li>
-		<!--		<li><a href="temp_graph">Graphs</a></li>  --> 
-				<li><a href="alarminfo">Alarm info</a></li>
-				<li><a href="alarmon">Alarm On!</a></li>
-				<li><a href="alarmoff">Alarm Off!</a></li>
-				<li><a href="/../admin">Admin</a></li>
-			</ul>
-		</div>
-
-		<div class="info">
-			<div class = "container-fluid">
-				<div class = "row">
-					<div class = "col-md-8 col-md-offset-2">			
-						{% block content %}
-						{% endblock %}
-					</div>
-				</div>
-			</div>			
-		</div>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<ul class="nav navbar-nav navbar-right">
+					<p class="navbar-text">
+						{% if user.is_authenticated %}
+							Welcome, {{ user.get_username }}. Thanks for logging in.
+							</p>
+							<li><a href="../admin/logout">Sign Out</a></li>
+						{% else %}
+							Welcome, new user. Please log in.
+							</p>
+							<li><a href="../admin/login/?next=/arduinoControl/graphs">Sign In</a></li>
+						{% endif %}
+					<li><a href="../admin">Admin</a></li>
+				</ul>
+			</div>
+		</nav>
+		{% block content %}
+		{% endblock %}
 	</body>
 </html>

@@ -1,0 +1,96 @@
+{% extends "arduinoControl/base.html" %}
+
+{% block content %}
+
+<div class="container">
+	<h2>Arduino Control</h2>
+	<p>Under construction</p>
+	<ul class="nav nav-tabs" role="tablist">
+		<li><a href=".">Home</a></li>
+		<li class="active"><a href="graphs">Graphs</a></li>
+		<li><a href="dashboard">Dashboard</a></li>
+		<li><a href="alarmon">Alarm On!</a></li>
+		<li><a href="alarmoff">Alarm Off!</a></li>
+	</ul>
+</div>
+
+<div class="info">
+	<div class = "container-fluid">
+		<div class = "row">
+			<div class = "col-md-8 col-md-offset-2">			
+				<br>
+				<div id = "gauge_chart"></div>
+				<div id = "temp_chart"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	google.load('visualization', '1.0', {'packages':['corechart', 'gauge']});
+	google.setOnLoadCallback(drawChart);
+	google.setOnLoadCallback(drawGauge);
+
+	function drawChart() {
+		var data = new google.visualization.DataTable();
+		
+		data.addColumn("date", "Date");
+		data.addColumn("number", "Temperature");
+		data.addColumn("number", "Thermostat");
+
+		var outer_list ={{ chart_temps|safe }};
+		var inner_list = [];
+		var datum;
+		var regel = [];
+		for (x in outer_list) {
+			inner_list = outer_list[x];
+			datum_str = inner_list[0];	
+			datum = new Date(datum_str.substring(0, 4), parseInt(datum_str.substring(4, 6)-1), datum_str.substring(6, 8), datum_str.substring(8, 10), datum_str.substring(10, 12));
+			regel.push([datum, inner_list[1], inner_list[2]]);
+			data.addRows(regel);
+		};
+	
+		 var options = {
+			//'width':800,
+			'height':600,
+			title : 'Temperature of last day',
+			vAxis: {title: 'Celsius'},
+			hAxis: {format:'y M d, hh:mm'},
+			//hAxis: {title: 'Time'},
+			seriesType: 'bars',
+			series: {1: {type: 'bars'}}
+		};
+		var chart = new google.visualization.ComboChart(document.getElementById('temp_chart'));
+		chart.draw(data, options);
+	};
+	
+	function drawGauge() {
+		
+		var gaugeData =google.visualization.arrayToDataTable([
+			['Label', 'Value'],
+			['Celsius', {{ last_temp }}],
+			['Thermostat', {{ thermostat }}]
+		],
+		false);
+
+		//gaugeData.addColumn("string", "Label");
+		//gaugeData.addColumn("number", "Value");
+		//gaugeData.addRows(['Celsius', {{ last_temp }}]);
+
+		var gaugeOptions = {
+			width: 400, height: 120,
+			redFrom: 90, redTo: 100,
+			yellowFrom:75, yellowTo: 90,
+			minorTicks: 5,
+			min: 10,
+			max: 30,
+			greenFrom: 18,
+			greenTo: 22
+		};
+		
+		var gaugeChart = new google.visualization.Gauge(document.getElementById('gauge_chart'));
+		gaugeChart.draw(gaugeData, gaugeOptions);
+	}
+</script>
+
+{% endblock %}

@@ -154,6 +154,7 @@ def checkAlarm():
 	kindOfDay 	= DayRoster.objects.filter(roster=1, day_of_week= day).last()
 	setTask		= ArduinoTask.objects.filter(task_name = 'checkAlarm')
 	lastItem 	= TimeItem.objects.filter(kind_of_day= kindOfDay.kind_of_day, task_name = ArduinoTask.objects.get(task_name = 'checkAlarm'), action_time__lte = timeOfDay).order_by('action_time').last()
+	snoozeAlert = lastitem.target_value
 	soundAlarm = False
 	if lastItem != None:		# If no entries are available for the day yet
 		lastAlarm 	= TaskLog.objects.filter(task_name = ArduinoTask.objects.get(task_name = 'checkAlarm')).order_by('date_set').last()
@@ -178,6 +179,8 @@ def checkAlarm():
 				subprocess.Popen(['mpg123', mp3_files[index]])
 				result = result + '-- Playing: ' + mp3_files[index] + ' ---'
 			TaskLog(task_name = ArduinoTask.objects.get(task_name = 'checkAlarm'), task_result = True, task_decimal = 0,task_message = 'Wake up:' + mp3_files[index] + ' ---', set_by = 'System').save()
+			if snoozeAlert == 99:
+				lastItem.delete()
 			#new_alarm = TaskLog(date_set = timezone.now(), alarm_status = True).save()
 	else:
 		result = str(kindOfDay) + ', No Alarm yet!'
